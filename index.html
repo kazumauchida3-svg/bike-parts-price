@@ -1,255 +1,528 @@
-# 旧車レストア部品価格比較アプリ Ver.2
+# 旧車レストア部品価格比較アプリ Ver.3
 
 ```html
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>旧車レストア部品価格比較 Ver.2</title>
+<meta charset="UTF-8">
+
+<meta
+name="viewport"
+content="width=device-width, initial-scale=1.0"
+>
+
+<title>
+旧車レストア部品価格比較 Ver.3
+</title>
 
 <style>
 
 :root {
-    --bg: #f4f1ea;
-    --card: #ffffff;
-    --text: #222;
-    --sub: #777;
-    --accent: #a84b12;
-    --accent-dark: #7d3508;
-    --green: #2f7d4c;
-    --border: #dddddd;
+
+    --bg:#f3f0e9;
+    --card:#ffffff;
+    --text:#222;
+    --sub:#777;
+
+    --accent:#a84b12;
+    --accent-dark:#7d3508;
+
+    --green:#287a4a;
+    --green-light:#e5f4eb;
+
+    --red:#b42318;
+    --red-light:#fde8e7;
+
+    --blue:#315f91;
+    --blue-light:#e8f0f9;
+
+    --border:#dddddd;
+
 }
 
 * {
-    box-sizing: border-box;
+
+    box-sizing:border-box;
+
 }
 
 body {
-    margin: 0;
-    font-family:
-        -apple-system,
-        BlinkMacSystemFont,
-        "Segoe UI",
-        "Noto Sans JP",
-        sans-serif;
 
-    background: var(--bg);
-    color: var(--text);
+    margin:0;
+
+    font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    "Noto Sans JP",
+    sans-serif;
+
+    background:var(--bg);
+
+    color:var(--text);
+
 }
 
 header {
-    background: #20252b;
-    color: white;
-    padding: 20px 16px;
+
+    background:#20252b;
+
+    color:white;
+
+    padding:20px 16px;
+
 }
 
 header h1 {
-    margin: 0;
-    font-size: 21px;
+
+    margin:0;
+
+    font-size:21px;
+
 }
 
 header p {
-    margin: 5px 0 0;
-    color: #cccccc;
-    font-size: 13px;
+
+    margin:5px 0 0;
+
+    color:#cccccc;
+
+    font-size:13px;
+
 }
 
 main {
-    max-width: 800px;
-    margin: auto;
-    padding: 16px;
+
+    max-width:850px;
+
+    margin:auto;
+
+    padding:16px;
+
 }
 
 .card {
-    background: white;
-    border-radius: 16px;
-    padding: 16px;
-    margin-bottom: 16px;
+
+    background:white;
+
+    border-radius:16px;
+
+    padding:16px;
+
+    margin-bottom:16px;
 
     box-shadow:
-        0 3px 12px
-        rgba(0,0,0,0.08);
+    0 3px 12px
+    rgba(0,0,0,.07);
+
 }
 
 h2 {
-    margin-top: 0;
-    font-size: 18px;
+
+    margin-top:0;
+
+    font-size:18px;
+
+}
+
+h3 {
+
+    margin-top:0;
+
 }
 
 label {
-    display: block;
-    margin-top: 10px;
-    margin-bottom: 5px;
-    font-weight: bold;
-    font-size: 14px;
+
+    display:block;
+
+    margin-top:10px;
+
+    margin-bottom:5px;
+
+    font-weight:bold;
+
+    font-size:14px;
+
 }
 
 input {
-    width: 100%;
-    padding: 12px;
+
+    width:100%;
+
+    padding:12px;
 
     border:
-        2px solid
-        var(--border);
+    2px solid
+    var(--border);
 
-    border-radius: 9px;
+    border-radius:9px;
 
-    font-size: 16px;
+    font-size:16px;
+
 }
 
 input:focus {
-    outline: none;
-    border-color: var(--accent);
+
+    outline:none;
+
+    border-color:var(--accent);
+
 }
 
 button {
-    border: none;
-    border-radius: 9px;
 
-    padding: 10px 13px;
+    border:none;
 
-    font-weight: bold;
+    border-radius:9px;
 
-    cursor: pointer;
+    padding:10px 13px;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
 }
 
 .primary {
-    background: var(--accent);
-    color: white;
+
+    background:var(--accent);
+
+    color:white;
+
 }
 
 .primary:hover {
-    background: var(--accent-dark);
+
+    background:var(--accent-dark);
+
 }
 
 .secondary {
-    background: #eeeeee;
-    color: #333;
+
+    background:#eeeeee;
+
+    color:#333;
+
 }
 
 .green {
-    background: var(--green);
-    color: white;
+
+    background:var(--green);
+
+    color:white;
+
+}
+
+.blue {
+
+    background:var(--blue);
+
+    color:white;
+
+}
+
+.red {
+
+    background:var(--red);
+
+    color:white;
+
 }
 
 .full {
-    width: 100%;
-    margin-top: 12px;
-}
 
-.part-card {
-    border:
-        1px solid
-        var(--border);
+    width:100%;
 
-    border-radius: 12px;
+    margin-top:12px;
 
-    padding: 14px;
-
-    margin-top: 12px;
-}
-
-.part-header {
-    display: flex;
-    justify-content: space-between;
-    gap: 10px;
-}
-
-.part-name {
-    font-weight: bold;
-    font-size: 17px;
-}
-
-.part-number {
-    color: var(--sub);
-    font-size: 13px;
-    margin-top: 3px;
-}
-
-.part-info {
-    margin-top: 10px;
-    font-size: 14px;
-}
-
-.part-buttons {
-    display: flex;
-    gap: 7px;
-    flex-wrap: wrap;
-
-    margin-top: 12px;
-}
-
-.part-buttons button {
-    flex: 1;
-    min-width: 100px;
 }
 
 .summary {
-    display: grid;
-    grid-template-columns:
-        repeat(2,1fr);
 
-    gap: 10px;
+    display:grid;
+
+    grid-template-columns:
+    repeat(3,1fr);
+
+    gap:10px;
+
 }
 
 .summary-box {
-    background: #f5f5f5;
 
-    border-radius: 12px;
+    background:#f5f5f5;
 
-    padding: 14px;
+    border-radius:12px;
 
-    text-align: center;
+    padding:14px;
+
+    text-align:center;
+
 }
 
 .summary-number {
-    font-size: 24px;
-    font-weight: bold;
 
-    color: var(--accent);
+    font-size:22px;
+
+    font-weight:bold;
+
+    color:var(--accent);
+
 }
 
 .small {
-    font-size: 12px;
-    color: var(--sub);
+
+    font-size:12px;
+
+    color:var(--sub);
+
 }
 
-.empty {
-    color: var(--sub);
-    text-align: center;
+.part-card {
 
-    padding: 25px 0;
+    border:
+    1px solid
+    var(--border);
+
+    border-radius:13px;
+
+    padding:14px;
+
+    margin-top:12px;
+
 }
 
-.status-purchased {
-    color: var(--green);
-    font-weight: bold;
+.part-title {
+
+    font-size:17px;
+
+    font-weight:bold;
+
+}
+
+.part-number {
+
+    color:var(--sub);
+
+    font-size:13px;
+
+    margin-top:4px;
+
+}
+
+.part-info {
+
+    margin-top:8px;
+
+    font-size:14px;
+
+}
+
+.part-buttons {
+
+    display:flex;
+
+    flex-wrap:wrap;
+
+    gap:7px;
+
+    margin-top:13px;
+
+}
+
+.part-buttons button {
+
+    flex:1;
+
+    min-width:110px;
+
+}
+
+.status {
+
+    display:inline-block;
+
+    padding:4px 9px;
+
+    border-radius:20px;
+
+    font-size:12px;
+
+    font-weight:bold;
+
 }
 
 .status-waiting {
-    color: #b06d00;
-    font-weight: bold;
+
+    background:#fff1d6;
+
+    color:#996000;
+
 }
 
-@media(max-width:500px) {
+.status-purchased {
 
-    .part-header {
-        display: block;
-    }
+    background:var(--green-light);
+
+    color:var(--green);
+
+}
+
+.price-box {
+
+    margin-top:14px;
+
+    padding:12px;
+
+    border-radius:11px;
+
+    background:#f7f7f7;
+
+}
+
+.price-row {
+
+    display:grid;
+
+    grid-template-columns:
+    1.2fr
+    1fr
+    1fr
+    1fr
+    auto;
+
+    gap:6px;
+
+    align-items:center;
+
+    padding:8px 0;
+
+    border-bottom:
+    1px solid
+    var(--border);
+
+    font-size:13px;
+
+}
+
+.price-row:last-child {
+
+    border-bottom:none;
+
+}
+
+.price-best {
+
+    background:
+    var(--green-light);
+
+    border-radius:8px;
+
+    padding:8px;
+
+}
+
+.best-label {
+
+    color:var(--green);
+
+    font-weight:bold;
+
+}
+
+.empty {
+
+    text-align:center;
+
+    color:var(--sub);
+
+    padding:25px 0;
+
+}
+
+.modal {
+
+    display:none;
+
+    position:fixed;
+
+    z-index:100;
+
+    left:0;
+
+    top:0;
+
+    width:100%;
+
+    height:100%;
+
+    background:
+    rgba(0,0,0,.55);
+
+    padding:20px;
+
+    overflow:auto;
+
+}
+
+.modal-content {
+
+    max-width:600px;
+
+    margin:30px auto;
+
+    background:white;
+
+    border-radius:16px;
+
+    padding:18px;
+
+}
+
+.modal-buttons {
+
+    display:flex;
+
+    gap:8px;
+
+    margin-top:15px;
+
+}
+
+.modal-buttons button {
+
+    flex:1;
+
+}
+
+@media(max-width:600px) {
 
     .summary {
+
         grid-template-columns:
-            repeat(2,1fr);
+        repeat(2,1fr);
+
+    }
+
+    .price-row {
+
+        grid-template-columns:
+        1fr 1fr;
+
+        gap:5px;
+
     }
 
 }
 
 </style>
+
 </head>
 
+
 <body>
+
 
 <header>
 
@@ -258,7 +531,7 @@ button {
 </h1>
 
 <p>
-Ver.2 ｜ 部品管理・購入管理・価格検索
+Ver.3 ｜ 部品管理・価格比較・購入管理
 </p>
 
 </header>
@@ -267,12 +540,14 @@ Ver.2 ｜ 部品管理・購入管理・価格検索
 <main>
 
 
-<!-- バイク情報 -->
+<!-- ======================
+バイク情報
+====================== -->
 
 <div class="card">
 
 <h2>
-🏍 レストア中のバイク
+🏍 レストア車両
 </h2>
 
 <label>
@@ -305,13 +580,14 @@ onclick="saveBike()"
 </div>
 
 
-
-<!-- 集計 -->
+<!-- ======================
+集計
+====================== -->
 
 <div class="card">
 
 <h2>
-💰 レストア費用
+💰 レストア費用・部品状況
 </h2>
 
 <div class="summary">
@@ -335,7 +611,23 @@ id="partCount"
 <div class="summary-box">
 
 <div class="small">
-購入済み部品代
+購入済み
+</div>
+
+<div
+class="summary-number"
+id="purchasedCount"
+>
+0
+</div>
+
+</div>
+
+
+<div class="summary-box">
+
+<div class="small">
+部品代合計
 </div>
 
 <div
@@ -352,15 +644,15 @@ id="totalCost"
 </div>
 
 
-
-<!-- 部品登録 -->
+<!-- ======================
+部品登録
+====================== -->
 
 <div class="card">
 
 <h2>
 ➕ 部品を登録
 </h2>
-
 
 <label>
 部品番号
@@ -371,16 +663,14 @@ id="partNumber"
 placeholder="例：92055-1234"
 >
 
-
 <label>
 部品名
 </label>
 
 <input
 id="partName"
-placeholder="例：フロントフェンダー"
+placeholder="例：フランジボルト"
 >
-
 
 <label>
 必要個数
@@ -389,10 +679,9 @@ placeholder="例：フロントフェンダー"
 <input
 id="partQuantity"
 type="number"
-value="1"
 min="1"
+value="1"
 >
-
 
 <button
 class="primary full"
@@ -406,8 +695,9 @@ onclick="addPart()"
 </div>
 
 
-
-<!-- 部品一覧 -->
+<!-- ======================
+部品一覧
+====================== -->
 
 <div class="card">
 
@@ -427,126 +717,119 @@ id="partsList"
 </main>
 
 
+<!-- ======================
+価格登録モーダル
+====================== -->
+
+<div
+id="priceModal"
+class="modal"
+>
+
+<div class="modal-content">
+
+<h2>
+💴 価格候補を登録
+</h2>
+
+<p
+id="modalPartName"
+>
+</p>
+
+
+<label>
+販売店
+</label>
+
+<input
+id="priceShop"
+placeholder="例：Yahoo!ショッピング"
+>
+
+
+<label>
+商品価格
+</label>
+
+<input
+id="itemPrice"
+type="number"
+placeholder="例：3000"
+>
+
+
+<label>
+送料
+</label>
+
+<input
+id="shippingPrice"
+type="number"
+placeholder="例：660"
+>
+
+
+<div class="modal-buttons">
+
+<button
+class="primary"
+onclick="savePrice()"
+>
+
+登録
+
+</button>
+
+<button
+class="secondary"
+onclick="closeModal()"
+>
+
+キャンセル
+
+</button>
+
+</div>
+
+</div>
+
+</div>
+
 
 <script>
 
 
-/* =========================
-データ読み込み
-========================= */
+/* ======================
+データ
+====================== */
 
 
 let bike =
 JSON.parse(
 localStorage.getItem("bikeInfo")
 ) || {
-name: "",
-year: ""
+
+    name:"",
+    year:""
+
 };
 
 
 let parts =
 JSON.parse(
-localStorage.getItem("bikeParts")
+localStorage.getItem("bikePartsV3")
 ) || [];
 
 
 
-/* =========================
-販売サイト
-========================= */
-
-
-const shops = [
-
-{
-name: "Amazon",
-
-url: function(q) {
-
-return "https://www.amazon.co.jp/s?k=" + q;
-
-}
-
-},
-
-{
-name: "楽天市場",
-
-url: function(q) {
-
-return "https://search.rakuten.co.jp/search/mall/" + q + "/";
-
-}
-
-},
-
-{
-name: "Yahoo!ショッピング",
-
-url: function(q) {
-
-return "https://shopping.yahoo.co.jp/search?p=" + q;
-
-}
-
-},
-
-{
-name: "Webike",
-
-url: function(q) {
-
-return
-"https://www.google.com/search?q=site%3Awebike.net+" + q;
-
-}
-
-},
-
-{
-name: "モノタロウ",
-
-url: function(q) {
-
-return
-"https://www.google.com/search?q=site%3Amonotaro.com+" + q;
-
-}
-
-},
-
-{
-name: "Yahoo!オークション",
-
-url: function(q) {
-
-return
-"https://auctions.yahoo.co.jp/search/search?p=" + q;
-
-}
-
-},
-
-{
-name: "メルカリ",
-
-url: function(q) {
-
-return
-"https://jp.mercari.com/search?keyword=" + q;
-
-}
-
-}
-
-];
+let currentPartId = null;
 
 
 
-/* =========================
+/* ======================
 バイク情報
-========================= */
+====================== */
 
 
 function saveBike() {
@@ -574,15 +857,17 @@ JSON.stringify(bike)
 );
 
 
-alert("バイク情報を保存しました。");
+alert(
+"バイク情報を保存しました。"
+);
 
 }
 
 
 
-/* =========================
+/* ======================
 部品追加
-========================= */
+====================== */
 
 
 function addPart() {
@@ -609,63 +894,53 @@ document
 );
 
 
-if (!number) {
+if(!number) {
 
-alert("部品番号を入力してください。");
-
-return;
-
-}
-
-
-if (!name) {
-
-alert("部品名を入力してください。");
+alert(
+"部品番号を入力してください。"
+);
 
 return;
 
 }
 
 
-const part = {
+if(!name) {
 
-id: Date.now(),
+alert(
+"部品名を入力してください。"
+);
 
-number: number,
+return;
 
-name: name,
-
-quantity: quantity || 1,
-
-purchased: false,
-
-price: 0,
-
-shop: ""
-
-};
+}
 
 
-parts.push(part);
+parts.push({
+
+    id:Date.now(),
+
+    number:number,
+
+    name:name,
+
+    quantity:
+    quantity || 1,
+
+    purchased:false,
+
+    purchasePrice:0,
+
+    purchaseShop:"",
+
+    prices:[]
+
+});
 
 
 saveParts();
 
-
-document
-.getElementById("partNumber")
-.value = "";
-
-
-document
-.getElementById("partName")
-.value = "";
-
-
-document
-.getElementById("partQuantity")
-.value = 1;
-
+clearPartForm();
 
 renderParts();
 
@@ -673,16 +948,16 @@ renderParts();
 
 
 
-/* =========================
+/* ======================
 部品保存
-========================= */
+====================== */
 
 
 function saveParts() {
 
 localStorage.setItem(
 
-"bikeParts",
+"bikePartsV3",
 
 JSON.stringify(parts)
 
@@ -692,9 +967,34 @@ JSON.stringify(parts)
 
 
 
-/* =========================
-部品一覧表示
-========================= */
+/* ======================
+入力欄クリア
+====================== */
+
+
+function clearPartForm() {
+
+document
+.getElementById("partNumber")
+.value="";
+
+
+document
+.getElementById("partName")
+.value="";
+
+
+document
+.getElementById("partQuantity")
+.value=1;
+
+}
+
+
+
+/* ======================
+部品一覧
+====================== */
 
 
 function renderParts() {
@@ -704,16 +1004,16 @@ document
 .getElementById("partsList");
 
 
-list.innerHTML = "";
+list.innerHTML="";
 
 
-if (parts.length === 0) {
+if(parts.length===0) {
 
-list.innerHTML = `
+list.innerHTML=`
 
 <div class="empty">
 
-まだ部品が登録されていません
+まだ部品が登録されていません。
 
 </div>
 
@@ -728,11 +1028,12 @@ return;
 
 parts.forEach(function(part) {
 
+
 const card =
 document.createElement("div");
 
 
-card.className =
+card.className=
 "part-card";
 
 
@@ -741,20 +1042,117 @@ part.purchased
 
 ?
 
-'<span class="status-purchased">購入済み</span>'
+`<span class="status status-purchased">
+購入済み
+</span>`
 
 :
 
-'<span class="status-waiting">未購入</span>';
+`<span class="status status-waiting">
+未購入
+</span>`;
 
 
-card.innerHTML = `
+let priceHTML="";
 
-<div class="part-header">
+
+if(part.prices &&
+part.prices.length>0) {
+
+const sorted =
+[...part.prices]
+.sort(
+(a,b)=>
+(a.item+a.shipping)
+-
+(b.item+b.shipping)
+);
+
+
+priceHTML=`
+
+<div class="price-box">
+
+<strong>
+価格候補
+</strong>
+
+${sorted.map(function(price,index) {
+
+const total =
+Number(price.item)
++
+Number(price.shipping);
+
+
+return `
+
+<div class="
+price-row
+${index===0
+? "price-best"
+: ""}
+">
 
 <div>
 
-<div class="part-name">
+${escapeHTML(price.shop)}
+
+${index===0
+? '<div class="best-label">★ 最安</div>'
+: ""}
+
+</div>
+
+
+<div>
+商品 ¥${Number(price.item)
+.toLocaleString()}
+</div>
+
+
+<div>
+送料 ¥${Number(price.shipping)
+.toLocaleString()}
+</div>
+
+
+<div>
+<strong>
+¥${total
+.toLocaleString()}
+</strong>
+</div>
+
+
+<button
+class="secondary"
+onclick="deletePrice(
+${part.id},
+${price.id}
+)"
+>
+削除
+</button>
+
+</div>
+
+`;
+
+}).join("")}
+
+</div>
+
+`;
+
+}
+
+
+card.innerHTML=`
+
+<div>
+
+<div class="part-title">
 
 ${escapeHTML(part.name)}
 
@@ -771,11 +1169,9 @@ ${escapeHTML(part.number)}
 </div>
 
 
-<div>
+<div class="part-info">
 
 ${status}
-
-</div>
 
 </div>
 
@@ -791,7 +1187,8 @@ ${part.quantity}
 <div class="part-info">
 
 購入価格：
-¥${Number(part.price).toLocaleString()}
+¥${Number(part.purchasePrice)
+.toLocaleString()}
 
 </div>
 
@@ -799,36 +1196,71 @@ ${part.quantity}
 <div class="part-info">
 
 購入先：
-${escapeHTML(part.shop || "未登録")}
+${escapeHTML(
+part.purchaseShop || "未登録"
+)}
 
 </div>
+
+
+${priceHTML}
 
 
 <div class="part-buttons">
 
 <button
 class="primary"
-onclick="searchPart(${part.id})"
+onclick="searchPart(
+${part.id}
+)"
 >
 
-🔎 価格検索
+🔎 一括検索
+
+</button>
+
+
+<button
+class="blue"
+onclick="openPriceModal(
+${part.id}
+)"
+>
+
+💴 価格候補追加
 
 </button>
 
 
 <button
 class="green"
-onclick="purchasePart(${part.id})"
+onclick="purchasePart(
+${part.id}
+)"
 >
 
-購入登録
+✓ 購入登録
 
 </button>
 
 
 <button
 class="secondary"
-onclick="deletePart(${part.id})"
+onclick="editPart(
+${part.id}
+)"
+>
+
+✏️ 編集
+
+</button>
+
+
+<button
+class="red"
+onclick="deletePart(
+${part.id}
+)"
 >
 
 削除
@@ -851,38 +1283,52 @@ updateSummary();
 
 
 
-/* =========================
+/* ======================
 価格検索
-========================= */
+====================== */
 
 
 function searchPart(id) {
 
 const part =
-parts.find(function(item) {
-
-return item.id === id;
-
-});
+parts.find(
+p=>p.id===id
+);
 
 
-if (!part) return;
+if(!part) return;
 
 
-const query =
+const q =
 encodeURIComponent(
 part.number
 );
 
 
-shops.forEach(function(shop) {
+const urls=[
+
+"https://www.amazon.co.jp/s?k="+q,
+
+"https://search.rakuten.co.jp/search/mall/"+q+"/",
+
+"https://shopping.yahoo.co.jp/search?p="+q,
+
+"https://www.google.com/search?q=site%3Awebike.net+"+q,
+
+"https://www.google.com/search?q=site%3Amonotaro.com+"+q,
+
+"https://auctions.yahoo.co.jp/search/search?p="+q,
+
+"https://jp.mercari.com/search?keyword="+q
+
+];
+
+
+urls.forEach(function(url){
 
 window.open(
-
-shop.url(query),
-
+url,
 "_blank"
-
 );
 
 });
@@ -891,72 +1337,261 @@ shop.url(query),
 
 
 
-/* =========================
+/* ======================
+価格候補モーダル
+====================== */
+
+
+function openPriceModal(id) {
+
+const part =
+parts.find(
+p=>p.id===id
+);
+
+
+if(!part) return;
+
+
+currentPartId=id;
+
+
+document
+.getElementById("modalPartName")
+textContent=
+
+part.name+
+"（"+
+part.number+
+"）";
+
+
+document
+.getElementById("priceShop")
+.value="";
+
+
+document
+.getElementById("itemPrice")
+.value="";
+
+
+document
+.getElementById("shippingPrice")
+.value="";
+
+
+document
+.getElementById("priceModal")
+.style.display="block";
+
+}
+
+
+
+function closeModal() {
+
+document
+.getElementById("priceModal")
+.style.display="none";
+
+currentPartId=null;
+
+}
+
+
+
+/* ======================
+価格候補保存
+====================== */
+
+
+function savePrice() {
+
+const part =
+parts.find(
+p=>p.id===currentPartId
+);
+
+
+if(!part) return;
+
+
+const shop =
+document
+.getElementById("priceShop")
+.value
+.trim();
+
+
+const item =
+Number(
+document
+.getElementById("itemPrice")
+.value
+);
+
+
+const shipping =
+Number(
+document
+.getElementById("shippingPrice")
+.value
+);
+
+
+if(!shop) {
+
+alert(
+"販売店を入力してください。"
+);
+
+return;
+
+}
+
+
+if(!item && item!==0) {
+
+alert(
+"商品価格を入力してください。"
+);
+
+return;
+
+}
+
+
+if(!shipping && shipping!==0) {
+
+alert(
+"送料を入力してください。"
+);
+
+return;
+
+}
+
+
+if(!part.prices) {
+
+part.prices=[];
+
+}
+
+
+part.prices.push({
+
+    id:Date.now(),
+
+    shop:shop,
+
+    item:item,
+
+    shipping:shipping
+
+});
+
+
+saveParts();
+
+closeModal();
+
+renderParts();
+
+}
+
+
+
+/* ======================
+価格削除
+====================== */
+
+
+function deletePrice(
+partId,
+priceId
+) {
+
+const part =
+parts.find(
+p=>p.id===partId
+);
+
+
+if(!part) return;
+
+
+part.prices =
+part.prices.filter(
+p=>p.id!==priceId
+);
+
+
+saveParts();
+
+renderParts();
+
+}
+
+
+
+/* ======================
 購入登録
-========================= */
+====================== */
 
 
 function purchasePart(id) {
 
 const part =
-parts.find(function(item) {
-
-return item.id === id;
-
-});
+parts.find(
+p=>p.id===id
+);
 
 
-if (!part) return;
+if(!part) return;
 
 
 const price =
 prompt(
 
-"購入価格を入力してください（1個あたり）",
+"実際に購入した価格を入力してください。",
 
-part.price || ""
+part.purchasePrice || ""
 
 );
 
 
-if (price === null) {
-
+if(price===null)
 return;
-
-}
 
 
 const shop =
 prompt(
 
-"購入先を入力してください",
+"購入先を入力してください。",
 
-part.shop || ""
+part.purchaseShop || ""
 
 );
 
 
-if (shop === null) {
-
+if(shop===null)
 return;
 
-}
+
+part.purchasePrice =
+Number(price)||0;
 
 
-part.price =
-Number(price) || 0;
-
-
-part.shop =
+part.purchaseShop =
 shop;
 
 
-part.purchased =
-true;
+part.purchased=true;
 
 
 saveParts();
-
 
 renderParts();
 
@@ -964,32 +1599,95 @@ renderParts();
 
 
 
-/* =========================
-削除
-========================= */
+/* ======================
+部品編集
+====================== */
+
+
+function editPart(id) {
+
+const part =
+parts.find(
+p=>p.id===id
+);
+
+
+if(!part) return;
+
+
+const number =
+prompt(
+"部品番号",
+part.number
+);
+
+
+if(number===null)
+return;
+
+
+const name =
+prompt(
+"部品名",
+part.name
+);
+
+
+if(name===null)
+return;
+
+
+const quantity =
+prompt(
+"必要個数",
+part.quantity
+);
+
+
+if(quantity===null)
+return;
+
+
+part.number=
+number.trim();
+
+
+part.name=
+name.trim();
+
+
+part.quantity=
+Number(quantity)||1;
+
+
+saveParts();
+
+renderParts();
+
+}
+
+
+
+/* ======================
+部品削除
+====================== */
 
 
 function deletePart(id) {
 
-const result =
-confirm(
+if(!confirm(
 "この部品を削除しますか？"
-);
-
-
-if (!result) return;
+))
+return;
 
 
 parts =
-parts.filter(function(part) {
-
-return part.id !== id;
-
-});
+parts.filter(
+p=>p.id!==id
+);
 
 
 saveParts();
-
 
 renderParts();
 
@@ -997,28 +1695,40 @@ renderParts();
 
 
 
-/* =========================
+/* ======================
 集計
-========================= */
+====================== */
 
 
 function updateSummary() {
 
 document
 .getElementById("partCount")
-.textContent =
+.textContent=
 parts.length;
 
 
-let total = 0;
+const purchased =
+parts.filter(
+p=>p.purchased
+).length;
 
 
-parts.forEach(function(part) {
+document
+.getElementById("purchasedCount")
+.textContent=
+purchased;
 
-if (part.purchased) {
+
+let total=0;
+
+
+parts.forEach(function(part){
+
+if(part.purchased){
 
 total +=
-Number(part.price)
+Number(part.purchasePrice)
 *
 Number(part.quantity);
 
@@ -1029,52 +1739,67 @@ Number(part.quantity);
 
 document
 .getElementById("totalCost")
-.textContent =
+.textContent=
 
-"¥" +
+"¥"+
 total.toLocaleString();
 
 }
 
 
 
-/* =========================
+/* ======================
 HTML安全処理
-========================= */
+====================== */
 
 
 function escapeHTML(text) {
 
 return String(text)
 
-.replace(/&/g, "&amp;")
+.replace(
+/&/g,
+"&amp;"
+)
 
-.replace(/</g, "&lt;")
+.replace(
+/</g,
+"&lt;"
+)
 
-.replace(/>/g, "&gt;")
+.replace(
+/>/g,
+"&gt;"
+)
 
-.replace(/"/g, "&quot;")
+.replace(
+/"/g,
+"&quot;"
+)
 
-.replace(/'/g, "&#039;");
+.replace(
+/'/g,
+"&#039;"
+);
 
 }
 
 
 
-/* =========================
+/* ======================
 初期表示
-========================= */
+====================== */
 
 
 document
 .getElementById("bikeName")
-.value =
+.value=
 bike.name;
 
 
 document
 .getElementById("bikeYear")
-.value =
+.value=
 bike.year;
 
 
