@@ -1,0 +1,741 @@
+旧車レストア部品価格比較アプリ Ver.1
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>旧車レストア部品価格比較 Ver.1</title>
+
+<style>
+:root {
+    --bg: #f4f1ea;
+    --card: #ffffff;
+    --text: #222222;
+    --sub: #666666;
+    --accent: #a84b12;
+    --accent-dark: #7d3508;
+    --border: #dddddd;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        "Noto Sans JP",
+        sans-serif;
+    background: var(--bg);
+    color: var(--text);
+}
+
+header {
+    background: #20252b;
+    color: white;
+    padding: 22px 16px;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 22px;
+}
+
+header p {
+    margin: 6px 0 0;
+    color: #cccccc;
+    font-size: 13px;
+}
+
+main {
+    max-width: 760px;
+    margin: auto;
+    padding: 16px;
+}
+
+.card {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 18px;
+    margin-bottom: 16px;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+}
+
+.badge {
+    display: inline-block;
+    background: #f3dfc9;
+    color: #7d3508;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+input {
+    width: 100%;
+    padding: 15px;
+    font-size: 18px;
+    border: 2px solid var(--border);
+    border-radius: 10px;
+}
+
+input:focus {
+    outline: none;
+    border-color: var(--accent);
+}
+
+button {
+    border: none;
+    border-radius: 10px;
+    padding: 12px;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.primary-button {
+    width: 100%;
+    margin-top: 10px;
+    background: var(--accent);
+    color: white;
+}
+
+.primary-button:hover {
+    background: var(--accent-dark);
+}
+
+.button-row {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.button-row button {
+    flex: 1;
+}
+
+.secondary-button {
+    background: #eeeeee;
+    color: #333333;
+}
+
+.note {
+    font-size: 12px;
+    color: var(--sub);
+    line-height: 1.6;
+}
+
+.shop-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
+
+.shop {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px;
+}
+
+.shop h3 {
+    margin: 0 0 5px;
+    font-size: 15px;
+}
+
+.shop p {
+    margin: 0 0 10px;
+    color: var(--sub);
+    font-size: 12px;
+}
+
+.shop a {
+    display: block;
+    text-align: center;
+    text-decoration: none;
+    background: #eeeeee;
+    color: #222222;
+    padding: 10px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.history-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.history-item:last-child {
+    border-bottom: none;
+}
+
+.empty {
+    color: var(--sub);
+    font-size: 13px;
+}
+
+@media (max-width: 500px) {
+
+    .shop-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+}
+</style>
+</head>
+
+<body>
+
+<header>
+
+<h1>🔧 旧車レストア部品価格比較</h1>
+
+<p>
+Ver.1 ｜ 部品番号から複数サイトを一括検索
+</p>
+
+</header>
+
+
+<main>
+
+
+<div class="card">
+
+<div class="badge">
+Ver.1
+</div>
+
+<label for="partNumber">
+
+パーツリストの部品番号
+
+</label>
+
+<input
+id="partNumber"
+type="text"
+placeholder="例：92055-1234"
+autocomplete="off"
+>
+
+<button
+class="primary-button"
+onclick="searchAll()"
+>
+
+🔎 すべてのサイトで検索
+
+</button>
+
+
+<div class="button-row">
+
+<button
+class="secondary-button"
+onclick="copyPartNumber()"
+>
+
+📋 コピー
+
+</button>
+
+<button
+class="secondary-button"
+onclick="clearPartNumber()"
+>
+
+🗑 クリア
+
+</button>
+
+</div>
+
+
+<p class="note">
+
+部品番号を入力すると、
+複数の販売サイトの検索ページを一括で開きます。
+
+</p>
+
+</div>
+
+
+
+<div class="card">
+
+<h2>
+
+販売サイト
+
+</h2>
+
+<div
+id="shopList"
+class="shop-grid"
+>
+
+</div>
+
+</div>
+
+
+
+<div class="card">
+
+<h2>
+
+検索履歴
+
+</h2>
+
+<div id="historyList">
+
+</div>
+
+<button
+class="secondary-button"
+onclick="clearHistory()"
+style="width:100%; margin-top:10px;"
+>
+
+履歴をすべて削除
+
+</button>
+
+</div>
+
+
+</main>
+
+
+
+<script>
+
+
+const shops = [
+
+{
+name: "Amazon",
+description: "新品・社外品",
+url: function(query) {
+
+return "https://www.amazon.co.jp/s?k=" + query;
+
+}
+},
+
+{
+name: "楽天市場",
+description: "新品・純正・社外品",
+url: function(query) {
+
+return "https://search.rakuten.co.jp/search/mall/" + query + "/";
+
+}
+},
+
+{
+name: "Yahoo!ショッピング",
+description: "新品・中古部品",
+url: function(query) {
+
+return "https://shopping.yahoo.co.jp/search?p=" + query;
+
+}
+},
+
+{
+name: "Webike",
+description: "バイク用品・純正部品",
+url: function(query) {
+
+return "https://www.google.com/search?q=site%3Awebike.net+" + query;
+
+}
+},
+
+{
+name: "モノタロウ",
+description: "汎用品・工具・部材",
+url: function(query) {
+
+return "https://www.google.com/search?q=site%3Amonotaro.com+" + query;
+
+}
+},
+
+{
+name: "Yahoo!オークション",
+description: "中古・廃番部品",
+url: function(query) {
+
+return "https://auctions.yahoo.co.jp/search/search?p=" + query;
+
+}
+},
+
+{
+name: "メルカリ",
+description: "中古・旧車部品",
+url: function(query) {
+
+return "https://jp.mercari.com/search?keyword=" + query;
+
+}
+},
+
+{
+name: "Google",
+description: "ショップ横断検索",
+url: function(query) {
+
+return "https://www.google.com/search?q=" + query;
+
+}
+}
+
+];
+
+
+
+function getPartNumber() {
+
+return document
+.getElementById("partNumber")
+.value
+.trim();
+
+}
+
+
+
+function searchAll() {
+
+const partNumber = getPartNumber();
+
+if (!partNumber) {
+
+alert("部品番号を入力してください。");
+
+return;
+
+}
+
+
+const query = encodeURIComponent(partNumber);
+
+
+saveHistory(partNumber);
+
+
+shops.forEach(function(shop) {
+
+window.open(
+shop.url(query),
+"_blank"
+);
+
+});
+
+
+renderShops(partNumber);
+
+}
+
+
+
+function renderShops(partNumber = "") {
+
+const shopList =
+document.getElementById("shopList");
+
+
+shopList.innerHTML = "";
+
+
+shops.forEach(function(shop) {
+
+const query =
+encodeURIComponent(partNumber);
+
+
+const div =
+document.createElement("div");
+
+
+div.className = "shop";
+
+
+div.innerHTML = `
+
+<h3>
+
+${shop.name}
+
+</h3>
+
+<p>
+
+${shop.description}
+
+</p>
+
+<a
+href="${partNumber ? shop.url(query) : '#'}"
+target="_blank"
+>
+
+検索する
+
+</a>
+
+`;
+
+
+shopList.appendChild(div);
+
+});
+
+}
+
+
+
+function copyPartNumber() {
+
+const partNumber = getPartNumber();
+
+
+if (!partNumber) {
+
+alert("部品番号を入力してください。");
+
+return;
+
+}
+
+
+navigator.clipboard
+.writeText(partNumber)
+.then(function() {
+
+alert("部品番号をコピーしました。");
+
+});
+
+}
+
+
+
+function clearPartNumber() {
+
+document
+.getElementById("partNumber")
+.value = "";
+
+
+renderShops();
+
+}
+
+
+
+function saveHistory(partNumber) {
+
+let history =
+JSON.parse(
+localStorage.getItem("bikePartHistory")
+|| "[]"
+);
+
+
+history =
+history.filter(function(item) {
+
+return item !== partNumber;
+
+});
+
+
+history.unshift(partNumber);
+
+
+history =
+history.slice(0, 20);
+
+
+localStorage.setItem(
+
+"bikePartHistory",
+
+JSON.stringify(history)
+
+);
+
+
+renderHistory();
+
+}
+
+
+
+function renderHistory() {
+
+const historyList =
+document.getElementById("historyList");
+
+
+const history =
+JSON.parse(
+localStorage.getItem("bikePartHistory")
+|| "[]"
+);
+
+
+if (history.length === 0) {
+
+historyList.innerHTML = `
+
+<div class="empty">
+
+まだ検索履歴はありません。
+
+</div>
+
+`;
+
+return;
+
+}
+
+
+historyList.innerHTML = "";
+
+
+history.forEach(function(partNumber) {
+
+const item =
+document.createElement("div");
+
+
+item.className =
+"history-item";
+
+
+const text =
+document.createElement("strong");
+
+
+text.textContent =
+partNumber;
+
+
+const button =
+document.createElement("button");
+
+
+button.textContent =
+"再検索";
+
+
+button.className =
+"secondary-button";
+
+
+button.onclick =
+function() {
+
+document
+.getElementById("partNumber")
+.value =
+partNumber;
+
+
+window.scrollTo({
+
+top: 0,
+
+behavior: "smooth"
+
+});
+
+};
+
+
+item.appendChild(text);
+
+item.appendChild(button);
+
+
+historyList.appendChild(item);
+
+});
+
+}
+
+
+
+function clearHistory() {
+
+const result =
+confirm(
+"検索履歴をすべて削除しますか？"
+);
+
+
+if (result) {
+
+localStorage.removeItem(
+"bikePartHistory"
+);
+
+renderHistory();
+
+}
+
+}
+
+
+
+document
+.getElementById("partNumber")
+.addEventListener(
+"keydown",
+function(event) {
+
+if (event.key === "Enter") {
+
+searchAll();
+
+}
+
+}
+);
+
+
+
+renderShops();
+
+renderHistory();
+
+
+</script>
+
+
+</body>
+</html>
