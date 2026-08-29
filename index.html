@@ -5,7 +5,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#22272d">
-<title>旧車レストア部品価格比較 Ver.5.1</title>
+<title>旧車レストア部品価格比較 Ver.6</title>
 <style>
 *{box-sizing:border-box}
 body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif;background:#f3f0e9;color:#222}
@@ -42,7 +42,7 @@ button{border:0;border-radius:9px;padding:10px 13px;font-weight:bold;cursor:poin
 <body>
 <header>
 <h1>🔧 旧車レストア部品価格比較</h1>
-<p>Ver.5.1 ｜ 複数バイク管理・部品価格検索</p>
+<p>Ver.6 ｜ 複数バイク管理・部品価格検索</p>
 </header>
 <main>
 <section class="card">
@@ -77,6 +77,11 @@ button{border:0;border-radius:9px;padding:10px 13px;font-weight:bold;cursor:poin
 <select id="condition"><option value="">新品・中古すべて</option><option value="new">新品</option><option value="used">中古</option></select>
 <select id="sort"><option value="+price">価格の安い順</option><option value="-score">おすすめ順</option></select>
 </div>
+<div class="row">
+<button class="secondary" onclick="searchExternal('amazon')">🛒 Amazonで検索</button>
+<button class="secondary" onclick="searchExternal('monotaro')">🔧 モノタロウで検索</button>
+</div>
+<div class="notice">Amazon・モノタロウは、現時点ではこのアプリ内に価格を直接取得せず、部品番号を入れた検索結果ページを開きます。Yahoo!はAPIから価格を取得してアプリ内に表示します。</div>
 <div id="searchStatus" class="notice"></div>
 <div id="searchResults"></div>
 </section>
@@ -255,6 +260,7 @@ function renderParts(){
         <div class="muted">部品番号：${escapeHTML(p.number)}</div>
         <span class="status ${p.purchased?"purchased":"waiting"}">${p.purchased?"購入済み":"未購入"}</span>
         <div class="muted" style="margin-top:7px">必要個数：${p.quantity}　購入価格：${money(p.purchasePrice)}　購入先：${escapeHTML(p.purchaseShop||"未登録")}</div>
+        ${p.purchaseUrl?`<button class="secondary" style="margin-top:7px" onclick="window.open(${JSON.stringify(p.purchaseUrl)} ,'_blank','noopener,noreferrer')">購入先を開く</button>`:""}
         ${renderSavedPrices(p)}
         <div class="row">
           <button class="primary" onclick="searchPart(${p.id})">🔎 価格検索</button>
@@ -272,7 +278,9 @@ function renderSavedPrices(p){
   return `<div style="margin-top:12px;border-top:1px solid #ddd;padding-top:10px"><b>💴 保存した価格候補</b>${
     prices.map((x,i)=>`<div style="display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid #eee">
       <div><b>${escapeHTML(x.shop)}</b>${i===0?'<span class="tag">★ 最安</span>':""}<div class="muted">商品価格 ${money(x.item)}</div></div>
-      <div><b>${money(x.item)}</b><br><button class="secondary" onclick="deleteSavedPrice(${p.id},${x.id})">削除</button></div>
+      <div><b>${money(x.item)}</b><br>
+      <button class="green" onclick="purchaseFromSaved(${p.id},${x.id})">✓ これで購入登録</button>
+      <button class="secondary" onclick="deleteSavedPrice(${p.id},${x.id})">削除</button></div>
     </div>`).join("")}</div>`;
 }
 
@@ -300,6 +308,18 @@ function updateSummary(){
   const total=parts.reduce((s,p)=>s+(p.purchased?Number(p.purchasePrice||0)*Number(p.quantity||1):0),0);
   document.getElementById("totalCost").textContent=money(total);
 }
+function searchExternal(site){
+  const q=document.getElementById("searchQuery").value.trim();
+  if(!q){alert("部品番号を入力してください。");return}
+  let url="";
+  if(site==="amazon"){
+    url="https://www.amazon.co.jp/s?k="+encodeURIComponent(q);
+  }else if(site==="monotaro"){
+    url="https://www.monotaro.com/s/q/?kw="+encodeURIComponent(q);
+  }
+  if(url)window.open(url,"_blank","noopener,noreferrer");
+}
+
 function searchPart(id){
   const p=getBike().parts.find(x=>x.id===id);if(!p)return;
   document.getElementById("searchQuery").value=p.number;
@@ -333,11 +353,15 @@ async function searchPrices(){
 
 function renderSearchResults(){
   const area=document.getElementById("searchResults");
-  if(!currentSearchItems.length){area.innerHTML='<div class="notice">該当商品が見つかりませんでした。</div>';return}
-  area.innerHTML="";
-  currentSearchItems.forEach((item,index)=>{
+  if(!currentSearchItems.length){
+    area.innerHTML='<div class="notice">該当商品が見つかりませんでした。</div>';
+    return;
+  }
+  const expanded=area.dataset.expanded==="1";
+  const visible=expanded?currentSearchItems:currentSearchItems.slice(0,5);
+  area.innerHTML=visible.map((item,index)=>{
     const img=item.image||"";
-    area.insertAdjacentHTML("beforeend",`
+    return `
       <div class="result">
         <img class="result-image" src="${escapeHTML(img)}" alt="" onerror="this.style.visibility='hidden'">
         <div>
@@ -350,10 +374,20 @@ function renderSearchResults(){
           </div>
         </div>
         <div class="result-price ${index===0?"best":""}">${index===0?"★ ":""}${money(item.price)}</div>
-      </div>`);
-  });
+      </div>`;
+  }).join("");
+  if(currentSearchItems.length>5){
+    area.insertAdjacentHTML("beforeend",`
+      <button class="secondary full" onclick="toggleSearchResults()">
+        ${expanded?"▲ 検索結果を折りたたむ":"▼ 検索結果をさらに表示（残り "+(currentSearchItems.length-5)+"件）"}
+      </button>`);
+  }
 }
-
+function toggleSearchResults(){
+  const area=document.getElementById("searchResults");
+  area.dataset.expanded=area.dataset.expanded==="1"?"0":"1";
+  renderSearchResults();
+}
 /* URLをHTML属性や文字列へ埋め込まず、取得済み配列から直接開く */
 function openSearchItem(index){
   const url=currentSearchItems[index]?.url;
@@ -381,6 +415,18 @@ function deleteSavedPrice(partId,priceId){
   const p=getBike().parts.find(x=>x.id===partId);if(!p)return;
   p.prices=(p.prices||[]).filter(x=>x.id!==priceId);saveData();render();
 }
+function purchaseFromSaved(partId,priceId){
+  const p=getBike().parts.find(x=>x.id===partId);if(!p)return;
+  const x=(p.prices||[]).find(v=>v.id===priceId);if(!x)return;
+  if(!confirm(`${x.shop} の ${money(x.item)} で購入登録しますか？`))return;
+  p.purchasePrice=Number(x.item)||0;
+  p.purchaseShop=x.shop||"";
+  p.purchased=true;
+  p.purchaseUrl=x.url||"";
+  saveData();
+  render();
+}
+
 
 render();
 loadApiUrlForm();
