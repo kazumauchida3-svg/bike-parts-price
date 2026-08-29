@@ -59,6 +59,15 @@ button{border:0;border-radius:9px;padding:10px 13px;font-weight:bold;cursor:poin
 </div>
 
 <section class="card">
+<h2>⚙️ 価格検索API設定</h2>
+<div class="notice">Cloudflare WorkerのURLを一度入力して保存してください。例：<code>https://xxxxx.workers.dev</code></div>
+<label>Worker URL</label>
+<input id="apiUrlInput" type="url" placeholder="https://xxxxx.workers.dev" autocomplete="off">
+<button class="blue full" onclick="saveApiUrlFromForm()">API URLを保存</button>
+<div id="apiUrlStatus" class="notice"></div>
+</section>
+
+<section class="card">
 <h2>🔎 部品番号から価格検索</h2>
 <div class="search-box">
 <input id="searchQuery" placeholder="例：16065-1234" autocomplete="off">
@@ -123,6 +132,30 @@ function money(v){return "¥"+Number(v||0).toLocaleString()}
 
 function getApiUrl(){
   return localStorage.getItem(API_KEY)||"";
+}
+function loadApiUrlForm(){
+  const input=document.getElementById("apiUrlInput");
+  const status=document.getElementById("apiUrlStatus");
+  if(!input)return;
+  const v=getApiUrl();
+  input.value=v;
+  status.textContent=v?"保存済み："+v:"まだ設定されていません。";
+}
+function saveApiUrlFromForm(){
+  const input=document.getElementById("apiUrlInput");
+  const status=document.getElementById("apiUrlStatus");
+  const raw=(input.value||"").trim().replace(/\/+$/,"");
+  try{
+    const u=new URL(raw);
+    if(u.protocol!=="https:")throw new Error();
+    if(!u.hostname.endsWith(".workers.dev") && !u.hostname){
+      throw new Error();
+    }
+    localStorage.setItem(API_KEY,raw);
+    status.textContent="保存しました。これで価格検索を実行できます。";
+  }catch(e){
+    status.textContent="URLが正しくありません。https://xxxxx.workers.dev の形で入力してください。";
+  }
 }
 
 /* URLは文字列連結ではなくURLオブジェクトで安全に作成 */
@@ -350,6 +383,7 @@ function deleteSavedPrice(partId,priceId){
 }
 
 render();
+loadApiUrlForm();
 </script>
 </body>
 </html>
