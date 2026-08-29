@@ -1,2115 +1,355 @@
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#222">
-<title>旧車レストア部品価格比較 Ver.5</title>
-
+<meta name="theme-color" content="#22272d">
+<title>旧車レストア部品価格比較 Ver.5.1</title>
 <style>
 *{box-sizing:border-box}
-
-body{
-  margin:0;
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif;
-  background:#f3f0e9;
-  color:#222;
-}
-
-header{
-  background:#22272d;
-  color:white;
-  padding:18px 15px;
-}
-
-header h1{
-  margin:0;
-  font-size:21px;
-}
-
-header p{
-  margin:5px 0 0;
-  color:#ccc;
-  font-size:12px;
-}
-
-main{
-  max-width:900px;
-  margin:auto;
-  padding:15px;
-}
-
-.card{
-  background:white;
-  border-radius:15px;
-  padding:16px;
-  margin-bottom:15px;
-  box-shadow:0 3px 12px rgba(0,0,0,.07);
-}
-
-h2{
-  font-size:18px;
-  margin:0 0 13px;
-}
-
-label{
-  display:block;
-  font-size:13px;
-  font-weight:bold;
-  margin:10px 0 5px;
-}
-
-input,select{
-  width:100%;
-  padding:11px;
-  font-size:16px;
-  border:2px solid #ddd;
-  border-radius:9px;
-}
-
-button{
-  border:0;
-  border-radius:9px;
-  padding:10px 13px;
-  font-weight:bold;
-  cursor:pointer;
-}
-
-.primary{
-  background:#a84b12;
-  color:white;
-}
-
-.secondary{
-  background:#eee;
-}
-
-.green{
-  background:#287a4a;
-  color:white;
-}
-
-.blue{
-  background:#315f91;
-  color:white;
-}
-
-.red{
-  background:#b42318;
-  color:white;
-}
-
-.full{
-  width:100%;
-  margin-top:10px;
-}
-
-.bike-grid{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:10px;
-}
-
-.bike{
-  border:1px solid #ddd;
-  border-radius:12px;
-  padding:13px;
-}
-
-.bike.active{
-  border:2px solid #a84b12;
-  background:#fffaf6;
-}
-
-.bike-name{
-  font-size:18px;
-  font-weight:bold;
-}
-
-.muted{
-  color:#777;
-  font-size:12px;
-}
-
-.row{
-  display:flex;
-  gap:7px;
-  flex-wrap:wrap;
-  margin-top:10px;
-}
-
-.row button{
-  flex:1;
-  min-width:90px;
-}
-
-.selected{
-  background:#e8f0f9;
-  padding:14px;
-  border-radius:11px;
-  margin-bottom:15px;
-}
-
-.selected-name{
-  font-size:20px;
-  font-weight:bold;
-}
-
-.summary{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:8px;
-}
-
-.summary-box{
-  background:#f5f5f5;
-  text-align:center;
-  padding:12px;
-  border-radius:10px;
-}
-
-.summary-number{
-  display:block;
-  font-size:21px;
-  font-weight:bold;
-  color:#a84b12;
-}
-
-.search-box{
-  display:grid;
-  grid-template-columns:1fr 120px;
-  gap:7px;
-}
-
-.filters{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:7px;
-  margin-top:8px;
-}
-
-.result{
-  display:grid;
-  grid-template-columns:75px 1fr auto;
-  gap:10px;
-  padding:13px 0;
-  border-bottom:1px solid #ddd;
-}
-
-.result:last-child{
-  border-bottom:0;
-}
-
-.result-image{
-  width:75px;
-  height:75px;
-  object-fit:contain;
-  background:#f5f5f5;
-  border-radius:7px;
-}
-
-.result-name{
-  font-size:14px;
-  font-weight:bold;
-  line-height:1.45;
-}
-
-.result-shop{
-  color:#777;
-  font-size:12px;
-  margin-top:5px;
-}
-
-.result-price{
-  font-size:20px;
-  font-weight:bold;
-  white-space:nowrap;
-}
-
-.best{
-  color:#287a4a;
-}
-
-.tag{
-  display:inline-block;
-  background:#e5f4eb;
-  color:#287a4a;
-  border-radius:5px;
-  padding:3px 6px;
-  font-size:11px;
-  margin-top:5px;
-}
-
-.part{
-  border:1px solid #ddd;
-  border-radius:12px;
-  padding:13px;
-  margin-top:10px;
-}
-
-.part-name{
-  font-size:17px;
-  font-weight:bold;
-}
-
-.status{
-  display:inline-block;
-  border-radius:20px;
-  padding:4px 8px;
-  font-size:11px;
-  margin-top:6px;
-}
-
-.waiting{
-  background:#fff1d6;
-  color:#996000;
-}
-
-.purchased{
-  background:#e5f4eb;
-  color:#287a4a;
-}
-
-.notice{
-  color:#777;
-  font-size:12px;
-  line-height:1.6;
-  margin-top:8px;
-}
-
-.error{
-  background:#fde8e7;
-  color:#8a1c16;
-  padding:11px;
-  border-radius:8px;
-  margin-top:10px;
-}
-
-.modal{
-  display:none;
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.6);
-  padding:20px;
-  overflow:auto;
-  z-index:1000;
-}
-
-.modal-content{
-  max-width:600px;
-  background:white;
-  margin:30px auto;
-  padding:18px;
-  border-radius:15px;
-}
-
-@media(max-width:600px){
-
-  .bike-grid{
-    grid-template-columns:1fr;
-  }
-
-  .search-box{
-    grid-template-columns:1fr;
-  }
-
-  .result{
-    grid-template-columns:60px 1fr;
-  }
-
-  .result-image{
-    width:60px;
-    height:60px;
-  }
-
-  .result-price{
-    grid-column:2;
-  }
-
-  .summary{
-    grid-template-columns:repeat(2,1fr);
-  }
-}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif;background:#f3f0e9;color:#222}
+header{background:#22272d;color:#fff;padding:18px 15px}
+header h1{margin:0;font-size:21px} header p{margin:5px 0 0;color:#ccc;font-size:12px}
+main{max-width:900px;margin:auto;padding:15px}
+.card{background:#fff;border-radius:15px;padding:16px;margin-bottom:15px;box-shadow:0 3px 12px rgba(0,0,0,.07)}
+h2{font-size:18px;margin:0 0 13px}
+label{display:block;font-size:13px;font-weight:bold;margin:10px 0 5px}
+input,select{width:100%;padding:11px;font-size:16px;border:2px solid #ddd;border-radius:9px}
+button{border:0;border-radius:9px;padding:10px 13px;font-weight:bold;cursor:pointer}
+.primary{background:#a84b12;color:#fff}.secondary{background:#eee}.green{background:#287a4a;color:#fff}.blue{background:#315f91;color:#fff}.red{background:#b42318;color:#fff}
+.full{width:100%;margin-top:10px}.row{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}.row button{flex:1;min-width:90px}
+.bike-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.bike{border:1px solid #ddd;border-radius:12px;padding:13px}.bike.active{border:2px solid #a84b12;background:#fffaf6}
+.bike-name{font-size:18px;font-weight:bold}.muted{color:#777;font-size:12px}
+.selected{background:#e8f0f9;padding:14px;border-radius:11px;margin-bottom:15px}.selected-name{font-size:20px;font-weight:bold}
+.summary{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.summary-box{background:#f5f5f5;text-align:center;padding:12px;border-radius:10px}
+.summary-number{display:block;font-size:21px;font-weight:bold;color:#a84b12}
+.search-box{display:grid;grid-template-columns:1fr 120px;gap:7px}.filters{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:8px}
+.result{display:grid;grid-template-columns:75px 1fr auto;gap:10px;padding:13px 0;border-bottom:1px solid #ddd}.result:last-child{border-bottom:0}
+.result-image{width:75px;height:75px;object-fit:contain;background:#f5f5f5;border-radius:7px}
+.result-name{font-size:14px;font-weight:bold;line-height:1.45}.result-shop{color:#777;font-size:12px;margin-top:5px}
+.result-price{font-size:20px;font-weight:bold;white-space:nowrap}.best{color:#287a4a}
+.tag{display:inline-block;background:#e5f4eb;color:#287a4a;border-radius:5px;padding:3px 6px;font-size:11px;margin-top:5px}
+.part{border:1px solid #ddd;border-radius:12px;padding:13px;margin-top:10px}.part-name{font-size:17px;font-weight:bold}
+.status{display:inline-block;border-radius:20px;padding:4px 8px;font-size:11px;margin-top:6px}.waiting{background:#fff1d6;color:#996000}.purchased{background:#e5f4eb;color:#287a4a}
+.notice{color:#777;font-size:12px;line-height:1.6;margin-top:8px}.error{background:#fde8e7;color:#8a1c16;padding:11px;border-radius:8px;margin-top:10px}
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);padding:20px;overflow:auto;z-index:1000}
+.modal-content{max-width:600px;background:#fff;margin:30px auto;padding:18px;border-radius:15px}
+.api-box{font-size:12px;background:#f7f7f7;padding:10px;border-radius:8px;word-break:break-all}
+@media(max-width:600px){.bike-grid{grid-template-columns:1fr}.search-box{grid-template-columns:1fr}.result{grid-template-columns:60px 1fr}.result-image{width:60px;height:60px}.result-price{grid-column:2}.summary{grid-template-columns:repeat(2,1fr)}}
 </style>
 </head>
-
 <body>
-
 <header>
-  <h1>🔧 旧車レストア部品価格比較</h1>
-  <p>Ver.5 ｜ 複数バイク管理・部品価格検索</p>
+<h1>🔧 旧車レストア部品価格比較</h1>
+<p>Ver.5.1 ｜ 複数バイク管理・部品価格検索</p>
 </header>
-
 <main>
-
-<!-- =========================
-     バイク一覧
-========================= -->
-
 <section class="card">
-
 <h2>🏍 バイク一覧</h2>
-
-<div id="bikeList" class="bike-grid"></div>
-
-<button class="primary full" onclick="openBikeModal()">
-＋ バイクを追加
-</button>
-
+<div id="bikeList"></div>
+<button class="primary full" onclick="openBikeModal()">＋ バイクを追加</button>
 </section>
-
 
 <div id="appArea" style="display:none">
-
-<!-- 現在のバイク -->
-
 <div class="selected">
-
-<div class="muted">
-現在管理中のバイク
-</div>
-
+<div class="muted">現在管理中のバイク</div>
 <div id="selectedBikeName" class="selected-name"></div>
-
 <div id="selectedBikeYear" class="muted"></div>
-
 </div>
 
-
-<!-- =========================
-     価格検索
-========================= -->
-
 <section class="card">
-
 <h2>🔎 部品番号から価格検索</h2>
-
 <div class="search-box">
-
-<input
-  id="searchQuery"
-  placeholder="例：92055-1234"
->
-
-<button
-  class="primary"
-  onclick="searchPrices()"
->
-価格検索
-</button>
-
+<input id="searchQuery" placeholder="例：16065-1234" autocomplete="off">
+<button class="primary" onclick="searchPrices()">価格検索</button>
 </div>
-
 <div class="filters">
-
-<select id="condition">
-<option value="">新品・中古すべて</option>
-<option value="new">新品</option>
-<option value="used">中古</option>
-</select>
-
-<select id="sort">
-<option value="+price">価格の安い順</option>
-<option value="-score">おすすめ順</option>
-</select>
-
+<select id="condition"><option value="">新品・中古すべて</option><option value="new">新品</option><option value="used">中古</option></select>
+<select id="sort"><option value="+price">価格の安い順</option><option value="-score">おすすめ順</option></select>
 </div>
-
 <div id="searchStatus" class="notice"></div>
-
 <div id="searchResults"></div>
-
 </section>
 
-
-<!-- =========================
-     レストア状況
-========================= -->
-
 <section class="card">
-
 <h2>📊 レストア状況</h2>
-
 <div class="summary">
-
-<div class="summary-box">
-<div class="muted">登録部品</div>
-<span id="partCount" class="summary-number">0</span>
+<div class="summary-box"><div class="muted">登録部品</div><span id="partCount" class="summary-number">0</span></div>
+<div class="summary-box"><div class="muted">購入済み</div><span id="purchasedCount" class="summary-number">0</span></div>
+<div class="summary-box"><div class="muted">部品代</div><span id="totalCost" class="summary-number">¥0</span></div>
 </div>
-
-<div class="summary-box">
-<div class="muted">購入済み</div>
-<span id="purchasedCount" class="summary-number">0</span>
-</div>
-
-<div class="summary-box">
-<div class="muted">部品代</div>
-<span id="totalCost" class="summary-number">¥0</span>
-</div>
-
-</div>
-
 </section>
 
-
-<!-- =========================
-     部品登録
-========================= -->
-
 <section class="card">
-
 <h2>➕ 部品を登録</h2>
-
-<label>
-部品番号
-</label>
-
-<input
- id="partNumber"
- placeholder="例：92055-1234"
->
-
-<label>
-部品名
-</label>
-
-<input
- id="partName"
- placeholder="例：フランジボルト"
->
-
-<label>
-必要個数
-</label>
-
-<input
- id="partQuantity"
- type="number"
- min="1"
- value="1"
->
-
-<button
- class="primary full"
- onclick="addPart()"
->
-部品を登録
-</button>
-
+<label>部品番号</label><input id="partNumber" placeholder="例：16065-1234">
+<label>部品名</label><input id="partName" placeholder="例：インシュレーター">
+<label>必要個数</label><input id="partQuantity" type="number" min="1" value="1">
+<button class="primary full" onclick="addPart()">部品を登録</button>
 </section>
-
-
-<!-- =========================
-     部品一覧
-========================= -->
 
 <section class="card">
-
 <h2>🔩 部品一覧</h2>
-
 <div id="partsList"></div>
-
 </section>
-
 </div>
-
-
 </main>
 
-
-<!-- =========================
-     バイク登録モーダル
-========================= -->
-
 <div id="bikeModal" class="modal">
-
 <div class="modal-content">
-
-<h2 id="bikeModalTitle">
-🏍 バイクを追加
-</h2>
-
-<label>
-車種
-</label>
-
-<input
- id="bikeName"
- placeholder="例：YAMAHA DX250"
->
-
-<label>
-年式
-</label>
-
-<input
- id="bikeYear"
- placeholder="例：1974"
->
-
-<label>
-メモ
-</label>
-
-<input
- id="bikeMemo"
- placeholder="例：フルレストア中"
->
-
-<div class="row">
-
-<button
- class="primary"
- onclick="saveBike()"
->
-保存
-</button>
-
-<button
- class="secondary"
- onclick="closeBikeModal()"
->
-キャンセル
-</button>
-
+<h2 id="bikeModalTitle">🏍 バイクを追加</h2>
+<label>車種</label><input id="bikeName" placeholder="例：YAMAHA DX250">
+<label>年式</label><input id="bikeYear" placeholder="例：1974">
+<label>メモ</label><input id="bikeMemo" placeholder="例：フルレストア中">
+<div class="row"><button class="primary" onclick="saveBike()">保存</button><button class="secondary" onclick="closeBikeModal()">キャンセル</button></div>
 </div>
-
 </div>
-
-</div>
-
 
 <script>
-
-/* =========================================
-   データ
-========================================= */
-
-const STORAGE_KEY =
-  "oldBikeRestoreVer5";
-
-let data =
-  JSON.parse(
-    localStorage.getItem(STORAGE_KEY)
-  );
-
-if(!data){
-
-  data = {
-    bikes:[]
-  };
-
-  /*
-   Ver.4のデータがあれば引き継ぐ
-  */
-
-  const oldData =
-    JSON.parse(
-      localStorage.getItem(
-        "bikeRestoreV4"
-      ) || "null"
-    );
-
-  if(oldData && oldData.bikes){
-
-    data.bikes =
-      oldData.bikes;
-
-  }
-
-}
-
-let selectedBikeId =
-  data.bikes.length
-    ? data.bikes[0].id
-    : null;
-
-let editingBikeId = null;
-
-let currentSearchItems = [];
-
-
-/* =========================================
-   共通関数
-========================================= */
-
-function saveData(){
-
-  localStorage.setItem(
-    STORAGE_KEY,
-    JSON.stringify(data)
-  );
-
-}
-
-
-function getBike(){
-
-  return data.bikes.find(
-    b => b.id === selectedBikeId
-  );
-
-}
-
-
-function newId(){
-
-  return Date.now() +
-    Math.floor(
-      Math.random()*10000
-    );
-
-}
-
-
-function escapeHTML(value){
-
-  return String(
-    value ?? ""
-  )
-  .replace(/[&<>"']/g,
-    function(m){
-
-      return {
-        "&":"&amp;",
-        "<":"&lt;",
-        ">":"&gt;",
-        '"':"&quot;",
-        "'":"&#039;"
-      }[m];
-
-    }
-  );
-
-}
-
-
-function money(value){
-
-  return "¥" +
-    Number(
-      value || 0
-    ).toLocaleString();
-
-}
-
-
-/* =========================================
-   表示
-========================================= */
-
-function render(){
-
-  renderBikes();
-
-  const bike =
-    getBike();
-
-  const app =
-    document.getElementById(
-      "appArea"
-    );
-
-  if(!bike){
-
-    app.style.display =
-      "none";
-
-    return;
-
-  }
-
-  app.style.display =
-    "block";
-
-  document.getElementById(
-    "selectedBikeName"
-  ).textContent =
-    bike.name;
-
-  document.getElementById(
-    "selectedBikeYear"
-  ).textContent =
-    bike.year
-      ? bike.year + "年"
-      : "";
-
-  renderParts();
-
-  updateSummary();
-
-}
-
-
-/* =========================================
-   バイク一覧
-========================================= */
-
-function renderBikes(){
-
-  const area =
-    document.getElementById(
-      "bikeList"
-    );
-
-  area.innerHTML = "";
-
-  if(!data.bikes.length){
-
-    area.innerHTML =
-      '<div class="notice">' +
-      'まだバイクが登録されていません。' +
-      '</div>';
-
-    return;
-
-  }
-
-  data.bikes.forEach(
-    function(bike){
-
-      const parts =
-        bike.parts || [];
-
-      const purchased =
-        parts.filter(
-          p => p.purchased
-        ).length;
-
-      const cost =
-        parts.reduce(
-          function(total,p){
-
-            if(!p.purchased)
-              return total;
-
-            return total +
-              Number(
-                p.purchasePrice || 0
-              ) *
-              Number(
-                p.quantity || 1
-              );
-
-          },
-          0
-        );
-
-      area.insertAdjacentHTML(
-        "beforeend",
-
-        `
-        <div class="bike ${
-          bike.id === selectedBikeId
-            ? "active"
-            : ""
-        }">
-
-          <div class="bike-name">
-            ${escapeHTML(
-              bike.name
-            )}
-          </div>
-
-          <div class="muted">
-            ${
-              escapeHTML(
-                bike.year ||
-                "年式未登録"
-              )
-            }
-          </div>
-
-          <div class="muted">
-            ${
-              escapeHTML(
-                bike.memo || ""
-              )
-            }
-          </div>
-
-          <div
-            class="muted"
-            style="margin-top:7px"
-          >
-            部品 ${parts.length}　
-            購入済み ${purchased}　
-            部品代 ${money(cost)}
-          </div>
-
-          <div class="row">
-
-            <button
-              class="primary"
-              onclick="selectBike(${bike.id})"
-            >
-              開く
-            </button>
-
-            <button
-              class="secondary"
-              onclick="editBike(${bike.id})"
-            >
-              編集
-            </button>
-
-            <button
-              class="red"
-              onclick="deleteBike(${bike.id})"
-            >
-              削除
-            </button>
-
-          </div>
-
-        </div>
-        `
-      );
-
-    }
-  );
-
-}
-
-
-/* =========================================
-   バイク操作
-========================================= */
-
-function selectBike(id){
-
-  selectedBikeId =
-    id;
-
-  render();
-
-  window.scrollTo({
-    top:0,
-    behavior:"smooth"
-  });
-
-}
-
-
-function openBikeModal(
-  editId = null
-){
-
-  editingBikeId =
-    editId;
-
-  const bike =
-    editId
-      ? data.bikes.find(
-          b => b.id === editId
-        )
-      : null;
-
-  document.getElementById(
-    "bikeModalTitle"
-  ).textContent =
-    bike
-      ? "✏️ バイクを編集"
-      : "🏍 バイクを追加";
-
-  document.getElementById(
-    "bikeName"
-  ).value =
-    bike?.name || "";
-
-  document.getElementById(
-    "bikeYear"
-  ).value =
-    bike?.year || "";
-
-  document.getElementById(
-    "bikeMemo"
-  ).value =
-    bike?.memo || "";
-
-  document.getElementById(
-    "bikeModal"
-  ).style.display =
-    "block";
-
-}
-
-
-function editBike(id){
-
-  openBikeModal(id);
-
-}
-
-
-function closeBikeModal(){
-
-  document.getElementById(
-    "bikeModal"
-  ).style.display =
-    "none";
-
-}
-
-
-function saveBike(){
-
-  const name =
-    document.getElementById(
-      "bikeName"
-    ).value.trim();
-
-  if(!name){
-
-    alert(
-      "車種を入力してください。"
-    );
-
-    return;
-
-  }
-
-  const year =
-    document.getElementById(
-      "bikeYear"
-    ).value.trim();
-
-  const memo =
-    document.getElementById(
-      "bikeMemo"
-    ).value.trim();
-
-
-  if(editingBikeId){
-
-    const bike =
-      data.bikes.find(
-        b =>
-          b.id ===
-          editingBikeId
-      );
-
-    bike.name =
-      name;
-
-    bike.year =
-      year;
-
-    bike.memo =
-      memo;
-
-  }else{
-
-    const bike = {
-
-      id:newId(),
-
-      name:name,
-
-      year:year,
-
-      memo:memo,
-
-      parts:[]
-
-    };
-
-    data.bikes.push(
-      bike
-    );
-
-    selectedBikeId =
-      bike.id;
-
-  }
-
-
-  saveData();
-
-  closeBikeModal();
-
-  render();
-
-}
-
-
-function deleteBike(id){
-
-  const bike =
-    data.bikes.find(
-      b => b.id === id
-    );
-
-  if(!bike)
-    return;
-
-  if(
-    !confirm(
-      "「" +
-      bike.name +
-      "」と、その部品データを削除しますか？"
-    )
-  )
-    return;
-
-
-  data.bikes =
-    data.bikes.filter(
-      b => b.id !== id
-    );
-
-
-  if(
-    selectedBikeId === id
-  ){
-
-    selectedBikeId =
-      data.bikes.length
-        ? data.bikes[0].id
-        : null;
-
-  }
-
-
-  saveData();
-
-  render();
-
-}
-
-
-/* =========================================
-   部品登録
-========================================= */
-
-function addPart(){
-
-  const bike =
-    getBike();
-
-  if(!bike)
-    return;
-
-
-  const number =
-    document.getElementById(
-      "partNumber"
-    ).value.trim();
-
-  const name =
-    document.getElementById(
-      "partName"
-    ).value.trim();
-
-  const quantity =
-    Number(
-      document.getElementById(
-        "partQuantity"
-      ).value
-    ) || 1;
-
-
-  if(!number || !name){
-
-    alert(
-      "部品番号と部品名を入力してください。"
-    );
-
-    return;
-
-  }
-
-
-  if(!bike.parts)
-    bike.parts = [];
-
-
-  bike.parts.push({
-
-    id:newId(),
-
-    number:number,
-
-    name:name,
-
-    quantity:quantity,
-
-    purchased:false,
-
-    purchasePrice:0,
-
-    purchaseShop:"",
-
-    prices:[]
-
-  });
-
-
-  saveData();
-
-  document.getElementById(
-    "partNumber"
-  ).value = "";
-
-  document.getElementById(
-    "partName"
-  ).value = "";
-
-  document.getElementById(
-    "partQuantity"
-  ).value = 1;
-
-  render();
-
-}
-
-
-/* =========================================
-   部品一覧
-========================================= */
-
-function renderParts(){
-
-  const area =
-    document.getElementById(
-      "partsList"
-    );
-
-  const bike =
-    getBike();
-
-  const parts =
-    bike.parts || [];
-
-  area.innerHTML = "";
-
-  if(!parts.length){
-
-    area.innerHTML =
-      '<div class="notice">' +
-      'まだ部品が登録されていません。' +
-      '</div>';
-
-    return;
-
-  }
-
-
-  parts.forEach(
-    function(part){
-
-      area.insertAdjacentHTML(
-        "beforeend",
-
-        `
-        <div class="part">
-
-          <div class="part-name">
-            ${escapeHTML(
-              part.name
-            )}
-          </div>
-
-          <div class="muted">
-            部品番号：
-            ${escapeHTML(
-              part.number
-            )}
-          </div>
-
-          <span class="status ${
-            part.purchased
-              ? "purchased"
-              : "waiting"
-          }">
-            ${
-              part.purchased
-                ? "購入済み"
-                : "未購入"
-            }
-          </span>
-
-          <div
-            class="muted"
-            style="margin-top:7px"
-          >
-            必要個数：
-            ${part.quantity}
-
-           　
-
-            購入価格：
-            ${money(
-              part.purchasePrice
-            )}
-
-           　
-
-            購入先：
-            ${escapeHTML(
-              part.purchaseShop ||
-              "未登録"
-            )}
-          </div>
-
-
-          ${
-            renderSavedPrices(
-              part
-            )
-          }
-
-
-          <div class="row">
-
-            <button
-              class="primary"
-              onclick="searchPart(${part.id})"
-            >
-              🔎 価格検索
-            </button>
-
-            <button
-              class="green"
-              onclick="purchasePart(${part.id})"
-            >
-              ✓ 購入登録
-            </button>
-
-            <button
-              class="secondary"
-              onclick="editPart(${part.id})"
-            >
-              ✏️ 編集
-            </button>
-
-            <button
-              class="red"
-              onclick="deletePart(${part.id})"
-            >
-              削除
-            </button>
-
-          </div>
-
-        </div>
-        `
-      );
-
-    }
-  );
-
-}
-
-
-function renderSavedPrices(part){
-
-  if(
-    !part.prices ||
-    !part.prices.length
-  )
-    return "";
-
-  const prices =
-    [...part.prices].sort(
-      (a,b) =>
-        Number(a.item || 0) -
-        Number(b.item || 0)
-    );
-
-
-  return `
-
-  <div
-    style="
-      margin-top:12px;
-      border-top:1px solid #ddd;
-      padding-top:10px;
-    "
-  >
-
-    <b>
-      💴 保存した価格候補
-    </b>
-
-    ${
-      prices.map(
-        function(price,index){
-
-          return `
-
-          <div
-            style="
-              display:flex;
-              justify-content:space-between;
-              gap:10px;
-              padding:8px 0;
-              border-bottom:1px solid #eee;
-            "
-          >
-
-            <div>
-
-              <b>
-                ${escapeHTML(
-                  price.shop
-                )}
-              </b>
-
-              ${
-                index === 0
-                  ? '<span class="tag">★ 最安</span>'
-                  : ""
-              }
-
-              <div class="muted">
-                商品価格
-                ${money(
-                  price.item
-                )}
-              </div>
-
-            </div>
-
-            <div>
-
-              <b>
-                ${money(
-                  price.item
-                )}
-              </b>
-
-              <br>
-
-              <button
-                class="secondary"
-                onclick="deleteSavedPrice(
-                  ${part.id},
-                  ${price.id}
-                )"
-              >
-                削除
-              </button>
-
-            </div>
-
-          </div>
-
-          `;
-
-        }
-      ).join("")
-    }
-
-  </div>
-
-  `;
-
-}
-
-
-/* =========================================
-   部品編集・削除
-========================================= */
-
-function editPart(id){
-
-  const part =
-    getBike().parts.find(
-      p => p.id === id
-    );
-
-  if(!part)
-    return;
-
-
-  const number =
-    prompt(
-      "部品番号",
-      part.number
-    );
-
-  if(number === null)
-    return;
-
-
-  const name =
-    prompt(
-      "部品名",
-      part.name
-    );
-
-  if(name === null)
-    return;
-
-
-  const quantity =
-    prompt(
-      "必要個数",
-      part.quantity
-    );
-
-  if(quantity === null)
-    return;
-
-
-  part.number =
-    number.trim();
-
-  part.name =
-    name.trim();
-
-  part.quantity =
-    Number(quantity) || 1;
-
-
-  saveData();
-
-  render();
-
-}
-
-
-function deletePart(id){
-
-  if(
-    !confirm(
-      "この部品を削除しますか？"
-    )
-  )
-    return;
-
-
-  const bike =
-    getBike();
-
-  bike.parts =
-    bike.parts.filter(
-      p => p.id !== id
-    );
-
-  saveData();
-
-  render();
-
-}
-
-
-/* =========================================
-   購入登録
-========================================= */
-
-function purchasePart(id){
-
-  const part =
-    getBike().parts.find(
-      p => p.id === id
-    );
-
-  if(!part)
-    return;
-
-
-  const price =
-    prompt(
-      "実際の購入価格",
-      part.purchasePrice || ""
-    );
-
-  if(price === null)
-    return;
-
-
-  const shop =
-    prompt(
-      "購入先",
-      part.purchaseShop || ""
-    );
-
-  if(shop === null)
-    return;
-
-
-  part.purchasePrice =
-    Number(price) || 0;
-
-  part.purchaseShop =
-    shop;
-
-  part.purchased =
-    true;
-
-
-  saveData();
-
-  render();
-
-}
-
-
-/* =========================================
-   サマリー
-========================================= */
-
-function updateSummary(){
-
-  const parts =
-    getBike().parts || [];
-
-
-  document.getElementById(
-    "partCount"
-  ).textContent =
-    parts.length;
-
-
-  document.getElementById(
-    "purchasedCount"
-  ).textContent =
-    parts.filter(
-      p => p.purchased
-    ).length;
-
-
-  const total =
-    parts.reduce(
-      function(sum,p){
-
-        if(!p.purchased)
-          return sum;
-
-        return sum +
-          Number(
-            p.purchasePrice || 0
-          ) *
-          Number(
-            p.quantity || 1
-          );
-
-      },
-      0
-    );
-
-
-  document.getElementById(
-    "totalCost"
-  ).textContent =
-    money(total);
-
-}
-
-
-/* =========================================
-   部品番号検索
-========================================= */
-
-function searchPart(id){
-
-  const part =
-    getBike().parts.find(
-      p => p.id === id
-    );
-
-  if(!part)
-    return;
-
-
-  document.getElementById(
-    "searchQuery"
-  ).value =
-    part.number;
-
-
-  searchPrices();
-
-}
-
-
-/* =========================================
-   API設定
-========================================= */
+const STORAGE_KEY="oldBikeRestoreVer5";
+const API_KEY="bikeRestoreVer5Api";
+
+let data=JSON.parse(localStorage.getItem(STORAGE_KEY)||"null")||{bikes:[]};
+let selectedBikeId=data.bikes.length?data.bikes[0].id:null;
+let editingBikeId=null;
+let currentSearchItems=[];
+
+function saveData(){localStorage.setItem(STORAGE_KEY,JSON.stringify(data))}
+function getBike(){return data.bikes.find(b=>b.id===selectedBikeId)}
+function newId(){return Date.now()+Math.floor(Math.random()*10000)}
+function escapeHTML(v){return String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
+function money(v){return "¥"+Number(v||0).toLocaleString()}
 
 function getApiUrl(){
-
-  return "bike-parts-price-search.kazumauchida3.workers.dev";
-
+  return localStorage.getItem(API_KEY)||"";
 }
 
-
-/*
-  API URLを設定する関数。
-
-  例：
-
-  setApiUrl(
-    "https://example.workers.dev"
-  )
-*/
-
-function setApiUrl(url){
-
-  localStorage.setItem(
-    "bikeRestoreVer5Api",
-    url.replace(/\/$/,"")
-  );
-
-  alert(
-    "価格検索APIを設定しました。"
-  );
-
+/* URLは文字列連結ではなくURLオブジェクトで安全に作成 */
+function buildSearchUrl(apiBase,query,condition,sort){
+  const base=String(apiBase||"").trim().replace(/\/+$/,"");
+  if(!/^https:\/\/[a-zA-Z0-9.-]+(?::\d+)?(?:\/.*)?$/.test(base)){
+    throw new Error("価格検索APIのURLが正しく設定されていません。");
+  }
+  const u=new URL(base+"/search");
+  u.searchParams.set("q",query);
+  if(condition)u.searchParams.set("condition",condition);
+  if(sort)u.searchParams.set("sort",sort);
+  return u.toString();
 }
 
+function render(){
+  renderBikes();
+  const bike=getBike();
+  const app=document.getElementById("appArea");
+  if(!bike){app.style.display="none";return}
+  app.style.display="block";
+  document.getElementById("selectedBikeName").textContent=bike.name;
+  document.getElementById("selectedBikeYear").textContent=bike.year?bike.year+"年":"";
+  renderParts();updateSummary();
+}
 
-/* =========================================
-   価格検索
-========================================= */
+function renderBikes(){
+  const area=document.getElementById("bikeList");area.innerHTML="";
+  if(!data.bikes.length){area.innerHTML='<div class="notice">まだバイクが登録されていません。</div>';return}
+  data.bikes.forEach(b=>{
+    const parts=b.parts||[], purchased=parts.filter(p=>p.purchased).length;
+    const cost=parts.reduce((s,p)=>s+(p.purchased?Number(p.purchasePrice||0)*Number(p.quantity||1):0),0);
+    area.insertAdjacentHTML("beforeend",`
+      <div class="bike ${b.id===selectedBikeId?"active":""}">
+        <div class="bike-name">${escapeHTML(b.name)}</div>
+        <div class="muted">${escapeHTML(b.year||"年式未登録")}</div>
+        <div class="muted">${escapeHTML(b.memo||"")}</div>
+        <div class="muted" style="margin-top:7px">部品 ${parts.length}　購入済み ${purchased}　部品代 ${money(cost)}</div>
+        <div class="row">
+          <button class="primary" onclick="selectBike(${b.id})">開く</button>
+          <button class="secondary" onclick="editBike(${b.id})">編集</button>
+          <button class="red" onclick="deleteBike(${b.id})">削除</button>
+        </div>
+      </div>`);
+  });
+}
 
+function selectBike(id){selectedBikeId=id;render();window.scrollTo({top:0,behavior:"smooth"})}
+function openBikeModal(editId=null){
+  editingBikeId=editId;
+  const b=editId?data.bikes.find(x=>x.id===editId):null;
+  document.getElementById("bikeModalTitle").textContent=b?"✏️ バイクを編集":"🏍 バイクを追加";
+  document.getElementById("bikeName").value=b?.name||"";
+  document.getElementById("bikeYear").value=b?.year||"";
+  document.getElementById("bikeMemo").value=b?.memo||"";
+  document.getElementById("bikeModal").style.display="block";
+}
+function editBike(id){openBikeModal(id)}
+function closeBikeModal(){document.getElementById("bikeModal").style.display="none"}
+function saveBike(){
+  const name=document.getElementById("bikeName").value.trim();
+  if(!name){alert("車種を入力してください。");return}
+  const year=document.getElementById("bikeYear").value.trim(),memo=document.getElementById("bikeMemo").value.trim();
+  if(editingBikeId){
+    const b=data.bikes.find(x=>x.id===editingBikeId);b.name=name;b.year=year;b.memo=memo;
+  }else{
+    const b={id:newId(),name,year,memo,parts:[]};data.bikes.push(b);selectedBikeId=b.id;
+  }
+  saveData();closeBikeModal();render();
+}
+function deleteBike(id){
+  const b=data.bikes.find(x=>x.id===id);if(!b)return;
+  if(!confirm("「"+b.name+"」と、その部品データを削除しますか？"))return;
+  data.bikes=data.bikes.filter(x=>x.id!==id);
+  if(selectedBikeId===id)selectedBikeId=data.bikes.length?data.bikes[0].id:null;
+  saveData();render();
+}
+
+function addPart(){
+  const b=getBike();if(!b)return;
+  const number=document.getElementById("partNumber").value.trim(),name=document.getElementById("partName").value.trim(),quantity=Number(document.getElementById("partQuantity").value)||1;
+  if(!number||!name){alert("部品番号と部品名を入力してください。");return}
+  b.parts=b.parts||[];
+  b.parts.push({id:newId(),number,name,quantity,purchased:false,purchasePrice:0,purchaseShop:"",prices:[]});
+  saveData();
+  document.getElementById("partNumber").value="";document.getElementById("partName").value="";document.getElementById("partQuantity").value=1;
+  render();
+}
+
+function renderParts(){
+  const area=document.getElementById("partsList"),b=getBike(),parts=b.parts||[];area.innerHTML="";
+  if(!parts.length){area.innerHTML='<div class="notice">まだ部品が登録されていません。</div>';return}
+  parts.forEach(p=>{
+    area.insertAdjacentHTML("beforeend",`
+      <div class="part">
+        <div class="part-name">${escapeHTML(p.name)}</div>
+        <div class="muted">部品番号：${escapeHTML(p.number)}</div>
+        <span class="status ${p.purchased?"purchased":"waiting"}">${p.purchased?"購入済み":"未購入"}</span>
+        <div class="muted" style="margin-top:7px">必要個数：${p.quantity}　購入価格：${money(p.purchasePrice)}　購入先：${escapeHTML(p.purchaseShop||"未登録")}</div>
+        ${renderSavedPrices(p)}
+        <div class="row">
+          <button class="primary" onclick="searchPart(${p.id})">🔎 価格検索</button>
+          <button class="green" onclick="purchasePart(${p.id})">✓ 購入登録</button>
+          <button class="secondary" onclick="editPart(${p.id})">✏️ 編集</button>
+          <button class="red" onclick="deletePart(${p.id})">削除</button>
+        </div>
+      </div>`);
+  });
+}
+
+function renderSavedPrices(p){
+  if(!p.prices?.length)return "";
+  const prices=[...p.prices].sort((a,b)=>Number(a.item||0)-Number(b.item||0));
+  return `<div style="margin-top:12px;border-top:1px solid #ddd;padding-top:10px"><b>💴 保存した価格候補</b>${
+    prices.map((x,i)=>`<div style="display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid #eee">
+      <div><b>${escapeHTML(x.shop)}</b>${i===0?'<span class="tag">★ 最安</span>':""}<div class="muted">商品価格 ${money(x.item)}</div></div>
+      <div><b>${money(x.item)}</b><br><button class="secondary" onclick="deleteSavedPrice(${p.id},${x.id})">削除</button></div>
+    </div>`).join("")}</div>`;
+}
+
+function editPart(id){
+  const p=getBike().parts.find(x=>x.id===id);if(!p)return;
+  const n=prompt("部品番号",p.number);if(n===null)return;
+  const name=prompt("部品名",p.name);if(name===null)return;
+  const q=prompt("必要個数",p.quantity);if(q===null)return;
+  p.number=n.trim();p.name=name.trim();p.quantity=Number(q)||1;saveData();render();
+}
+function deletePart(id){
+  if(!confirm("この部品を削除しますか？"))return;
+  const b=getBike();b.parts=b.parts.filter(p=>p.id!==id);saveData();render();
+}
+function purchasePart(id){
+  const p=getBike().parts.find(x=>x.id===id);if(!p)return;
+  const price=prompt("実際の購入価格",p.purchasePrice||"");if(price===null)return;
+  const shop=prompt("購入先",p.purchaseShop||"");if(shop===null)return;
+  p.purchasePrice=Number(price)||0;p.purchaseShop=shop;p.purchased=true;saveData();render();
+}
+function updateSummary(){
+  const parts=getBike().parts||[];
+  document.getElementById("partCount").textContent=parts.length;
+  document.getElementById("purchasedCount").textContent=parts.filter(p=>p.purchased).length;
+  const total=parts.reduce((s,p)=>s+(p.purchased?Number(p.purchasePrice||0)*Number(p.quantity||1):0),0);
+  document.getElementById("totalCost").textContent=money(total);
+}
+function searchPart(id){
+  const p=getBike().parts.find(x=>x.id===id);if(!p)return;
+  document.getElementById("searchQuery").value=p.number;
+  searchPrices();
+}
+
+/* 価格検索 */
 async function searchPrices(){
-
-  const query =
-    document.getElementById(
-      "searchQuery"
-    ).value.trim();
-
-
-  if(!query){
-
-    alert(
-      "部品番号を入力してください。"
-    );
-
-    return;
-
-  }
-
-
-  const api =
-    getApiUrl();
-
-
-  const results =
-    document.getElementById(
-      "searchResults"
-    );
-
-  const status =
-    document.getElementById(
-      "searchStatus"
-    );
-
-
-  results.innerHTML =
-    '<div class="notice">' +
-    '🔎 価格を検索しています…' +
-    '</div>';
-
-
-  status.textContent = "";
-
-
-  /*
-    APIが設定されていない場合
-  */
-
+  const query=document.getElementById("searchQuery").value.trim();
+  if(!query){alert("部品番号を入力してください。");return}
+  const api=getApiUrl(),results=document.getElementById("searchResults"),status=document.getElementById("searchStatus");
+  results.innerHTML='<div class="notice">🔎 価格を検索しています…</div>';status.textContent="";
   if(!api){
-
-    results.innerHTML = `
-
-      <div class="error">
-
-        価格検索APIがまだ設定されていません。
-
-        <br><br>
-
-        Cloudflare Worker等の検索APIを設定して、
-
-        <br>
-
-        JavaScriptコンソールで
-
-        <br><br>
-
-        <code>
-        setApiUrl("https://あなたのWorkerURL")
-        </code>
-
-        <br><br>
-
-        を実行してください。
-
-      </div>
-
-    `;
-
-    return;
-
+    results.innerHTML='<div class="error">価格検索APIのURLが設定されていません。</div>';return;
   }
-
-
   try{
-
-    const url =
-      api.replace(/\/$/,"") +
-      "/search?q=" +
-      encodeURIComponent(
-        query
-      ) +
-      "&condition=" +
-      encodeURIComponent(
-        document.getElementById(
-          "condition"
-        ).value
-      ) +
-      "&sort=" +
-      encodeURIComponent(
-        document.getElementById(
-          "sort"
-        ).value
-      );
-
-
-    const response =
-      await fetch(url);
-
-
-    const data =
-      await response.json();
-
-
-    if(!response.ok){
-
-      throw new Error(
-        data.error ||
-        "APIエラー"
-      );
-
-    }
-
-
-    currentSearchItems =
-      data.items || [];
-
-
-    status.textContent =
-      "検索結果：" +
-      (
-        data.total ||
-        currentSearchItems.length
-      ) +
-      "件";
-
-
+    const requestUrl=buildSearchUrl(api,query,document.getElementById("condition").value,document.getElementById("sort").value);
+    const response=await fetch(requestUrl,{method:"GET",headers:{"Accept":"application/json"}});
+    const text=await response.text();
+    let result;
+    try{result=JSON.parse(text)}catch(e){throw new Error("APIからJSONではない応答が返りました。HTTP "+response.status)}
+    if(!response.ok)throw new Error(result.error||"APIエラー（HTTP "+response.status+"）");
+    currentSearchItems=Array.isArray(result.items)?result.items:[];
+    status.textContent="検索結果："+(result.total??currentSearchItems.length)+"件";
     renderSearchResults();
-
-  }catch(error){
-
-    results.innerHTML = `
-
-      <div class="error">
-
-        価格検索に失敗しました。
-
-        <br>
-
-        ${escapeHTML(
-          error.message
-        )}
-
-      </div>
-
-    `;
-
+  }catch(e){
+    console.error(e);
+    results.innerHTML='<div class="error">価格検索に失敗しました。<br>'+escapeHTML(e.message)+'</div>';
   }
-
 }
-
-
-/* =========================================
-   検索結果表示
-========================================= */
 
 function renderSearchResults(){
-
-  const area =
-    document.getElementById(
-      "searchResults"
-    );
-
-
-  if(
-    !currentSearchItems.length
-  ){
-
-    area.innerHTML =
-      '<div class="notice">' +
-      '該当商品が見つかりませんでした。' +
-      '</div>';
-
-    return;
-
-  }
-
-
-  area.innerHTML = "";
-
-
-  currentSearchItems.forEach(
-    function(item,index){
-
-      area.insertAdjacentHTML(
-        "beforeend",
-
-        `
-
-        <div class="result">
-
-          <img
-            class="result-image"
-            src="${escapeHTML(
-              item.image || ""
-            )}"
-            onerror="
-              this.style.visibility='hidden'
-            "
-          >
-
-
-          <div>
-
-            <div class="result-name">
-
-              ${escapeHTML(
-                item.name
-              )}
-
-            </div>
-
-            <div class="result-shop">
-
-              ${escapeHTML(
-                item.shop ||
-                "Yahoo!ショッピング"
-              )}
-
-            </div>
-
-
-            ${
-              item.shipping
-                ? `
-                  <span class="tag">
-                    ${escapeHTML(
-                      item.shipping
-                    )}
-                  </span>
-                `
-                : ""
-            }
-
-
-            <div class="row">
-
-              <button
-                class="secondary"
-                onclick="saveSearchResult(${index})"
-              >
-                💾 保存
-              </button>
-
-
-              <button
-                class="blue"
-                onclick="
-                  window.open(
-                    '${escapeHTML(
-                      item.url
-                    )}',
-                    '_blank'
-                  )
-                "
-              >
-                商品を見る
-              </button>
-
-            </div>
-
+  const area=document.getElementById("searchResults");
+  if(!currentSearchItems.length){area.innerHTML='<div class="notice">該当商品が見つかりませんでした。</div>';return}
+  area.innerHTML="";
+  currentSearchItems.forEach((item,index)=>{
+    const img=item.image||"";
+    area.insertAdjacentHTML("beforeend",`
+      <div class="result">
+        <img class="result-image" src="${escapeHTML(img)}" alt="" onerror="this.style.visibility='hidden'">
+        <div>
+          <div class="result-name">${escapeHTML(item.name)}</div>
+          <div class="result-shop">${escapeHTML(item.shop||"Yahoo!ショッピング")}</div>
+          ${item.shipping?`<span class="tag">${escapeHTML(item.shipping)}</span>`:""}
+          <div class="row">
+            <button class="secondary" onclick="saveSearchResult(${index})">💾 保存</button>
+            <button class="blue" onclick="openSearchItem(${index})">商品を見る</button>
           </div>
-
-
-          <div
-            class="
-              result-price
-              ${
-                index === 0
-                  ? "best"
-                  : ""
-              }
-            "
-          >
-
-            ${
-              index === 0
-                ? "★ "
-                : ""
-            }
-
-            ${money(
-              item.price
-            )}
-
-          </div>
-
         </div>
-
-        `
-
-      );
-
-    }
-  );
-
+        <div class="result-price ${index===0?"best":""}">${index===0?"★ ":""}${money(item.price)}</div>
+      </div>`);
+  });
 }
 
-
-/* =========================================
-   検索結果保存
-========================================= */
+/* URLをHTML属性や文字列へ埋め込まず、取得済み配列から直接開く */
+function openSearchItem(index){
+  const url=currentSearchItems[index]?.url;
+  if(!url){alert("商品URLがありません。");return}
+  try{
+    const u=new URL(url);
+    if(u.protocol!=="http:"&&u.protocol!=="https:")throw new Error();
+    window.open(u.href,"_blank","noopener,noreferrer");
+  }catch(e){alert("商品URLが正しくありません。")}
+}
 
 function saveSearchResult(index){
-
-  const item =
-    currentSearchItems[index];
-
-  if(!item)
-    return;
-
-
-  const number =
-    document.getElementById(
-      "searchQuery"
-    ).value.trim();
-
-
-  const bike =
-    getBike();
-
-
-  let part =
-    bike.parts.find(
-      p => p.number === number
-    );
-
-
-  /*
-    まだ登録されていない部品なら
-    自動登録
-  */
-
-  if(!part){
-
-    part = {
-
-      id:newId(),
-
-      number:number,
-
-      name:
-        item.name ||
-        number,
-
-      quantity:1,
-
-      purchased:false,
-
-      purchasePrice:0,
-
-      purchaseShop:"",
-
-      prices:[]
-
-    };
-
-
-    bike.parts.push(
-      part
-    );
-
+  const item=currentSearchItems[index];if(!item)return;
+  const number=document.getElementById("searchQuery").value.trim(),b=getBike();
+  let p=b.parts.find(x=>x.number===number);
+  if(!p){
+    p={id:newId(),number,name:item.name||number,quantity:1,purchased:false,purchasePrice:0,purchaseShop:"",prices:[]};
+    b.parts.push(p);
   }
-
-
-  if(!part.prices)
-    part.prices = [];
-
-
-  part.prices.push({
-
-    id:newId(),
-
-    shop:
-      item.shop ||
-      "Yahoo!ショッピング",
-
-    item:
-      Number(
-        item.price || 0
-      ),
-
-    url:
-      item.url || ""
-
-  });
-
-
-  saveData();
-
-  alert(
-    "価格候補として保存しました。"
-  );
-
-  render();
-
+  p.prices=p.prices||[];
+  p.prices.push({id:newId(),shop:item.shop||"Yahoo!ショッピング",item:Number(item.price||0),url:item.url||""});
+  saveData();alert("価格候補として保存しました。");render();
 }
-
-
-/* =========================================
-   保存価格削除
-========================================= */
-
-function deleteSavedPrice(
-  partId,
-  priceId
-){
-
-  const part =
-    getBike().parts.find(
-      p => p.id === partId
-    );
-
-  if(!part)
-    return;
-
-
-  part.prices =
-    (part.prices || [])
-      .filter(
-        p => p.id !== priceId
-      );
-
-
-  saveData();
-
-  render();
-
+function deleteSavedPrice(partId,priceId){
+  const p=getBike().parts.find(x=>x.id===partId);if(!p)return;
+  p.prices=(p.prices||[]).filter(x=>x.id!==priceId);saveData();render();
 }
-
-
-/* =========================================
-   初期表示
-========================================= */
 
 render();
-
 </script>
-
 </body>
 </html>
